@@ -8,5 +8,6 @@
 ### Tech
 - Django back-end
 - JavaScript front-end
+- API calls
 
 ![](image.png)
