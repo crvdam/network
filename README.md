@@ -1,6 +1,6 @@
 # Social network
 
-### features
+### Features
 - User authentication
 - Users can create/edit posts and like posts
 - Users can follow eachother and amount of followers is tracked
