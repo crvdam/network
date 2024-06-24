@@ -1,0 +1,67 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    {% if user.is_authenticated %}
+        <div class="new-post">
+            <form action="{% url 'new_post' %}" method="post" class="new-post-form">
+                {% csrf_token %}
+                {{ form.content }}           
+                <button class="new-post-button">Post</button>
+            </form>
+        </div>
+    {% endif %} 
+    
+    {% for post in page_obj %}
+        <table class="post">
+            <tr>
+                <td class="post-content" id="post-{{ post.id }}-content">
+                    {{ post.content }}        
+                </td>
+                {% if user.id == post.user.id %}
+                    <td class="edit-form-div" id="edit-form-div-{{ post.id }}">
+                        <textarea type="textarea" id="edit-content-{{ post.id}}">{{ post.content }}</textarea>
+                        <input class="edit-submit" type="submit" id="edit-submit-{{ post.id }}" value="Save">
+                    </td>
+                {% endif %}    
+                {% if user.id == post.user.id %}
+                    <td class="edit-button-div">
+                        <img class="edit-button" id="{{ post.id }}" src="https://cdn-icons-png.flaticon.com/128/1159/1159633.png" alt="Edit" height="15px">
+                    </td>
+                {% endif %}  
+            </tr>
+            <tr>
+                <td class="post-user-date">
+                    <p>by</p>
+                    <a href="/profile/{{ post.user.id }}">{{ post.user }}</a>
+                     on {{ post.timestamp }}
+                </td>
+                <td class="likes">
+                    <span id="total-likes-{{ post.id }}">{{ post.likes }}</span>
+                    {% if user.is_authenticated and post.id in user_likes_list %}
+                        <img class="like-button" id="like-button-{{ post.id }}"src=  "https://cdn-icons-png.flaticon.com/128/833/833472.png" alt="Unlike" height="15px">
+                    {% elif user.is_authenticated %}
+                        <img class="like-button" id="like-button-{{ post.id }}" src="https://cdn-icons-png.flaticon.com/128/1077/1077035.png" alt="Like" height="15px">
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    {% endfor %}
+  
+    <div class="pages">
+        <ul>
+            {% if page_obj.has_previous %}
+                <li class="page"><a href="?page=1">first</a></li>
+                <li class="page"><a href="?page={{ page_obj.previous_page_number }}">previous</a></li>
+            {% endif %}
+
+            <li class="page-current">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</li>
+
+            {% if page_obj.has_next %}
+                <li class="page"><a href="?page={{ page_obj.next_page_number }}">next</a></li>
+                <li class="page"><a href="?page={{ page_obj.paginator.num_pages }}">last</a></li>
+            {% endif %}
+        </ul>
+    </div>
+{% endblock %}
+
+
